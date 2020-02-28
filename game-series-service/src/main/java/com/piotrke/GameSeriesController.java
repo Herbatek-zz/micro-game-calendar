@@ -1,12 +1,13 @@
 package com.piotrke;
 
+import com.piotrke.external.GameSeriesRequest;
+
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
+import java.util.Optional;
 
 @Path("/game-series")
 public class GameSeriesController {
@@ -22,5 +23,19 @@ public class GameSeriesController {
                 .map(Response::ok)
                 .orElse(Response.status(Response.Status.NOT_FOUND))
                 .build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addToGameSeries(GameSeriesRequest gameSeriesRequest) {
+        Optional<GameSeries> gameSeriesDb = gsService.findGameSeriesByName(gameSeriesRequest.getName());
+        if (gameSeriesDb.isPresent()) {
+            GameSeries gameSeries = gsService.addToSeries(gameSeriesDb.get(), gameSeriesRequest.getGames());
+            return Response.created(URI.create("/game-series/" + gameSeries.getName())).entity(gameSeries).build();
+        } else {
+            GameSeries gameSeries = gsService.create(gameSeriesRequest);
+            return Response.ok(gameSeries).build();
+        }
     }
 }
