@@ -1,0 +1,21 @@
+/**
+drop user gss;
+drop database gss;
+*/
+
+CREATE USER gss WITH
+    LOGIN
+    NOSUPERUSER
+    NOCREATEDB
+    NOCREATEROLE
+    NOINHERIT
+    NOREPLICATION
+    CONNECTION LIMIT -1
+    PASSWORD 'P10tr3k';
+COMMENT ON ROLE gss IS 'gss user';
+
+CREATE DATABASE gss
+    WITH
+    OWNER = gss
+    ENCODING = 'UTF8'
+    CONNECTION LIMIT = -1;
