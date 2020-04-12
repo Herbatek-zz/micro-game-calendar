@@ -1,0 +1,22 @@
+version: '2.1'
+services:
+  cassandra:
+    container_name: game-db
+    image: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - "./cassandra-init.sh:/cassandra-init.sh"
+    command: "sh /cassandra-init.sh"
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+  discovery-service:
+    container_name: discovery-service
+    build: ../discovery-service
+    ports:
+    - "8761:8761"
+  gateway-service:
+    container_name: gateway-service
+    build: ../gateway-service
+    ports:
+    - "80:80"
