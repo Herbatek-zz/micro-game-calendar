@@ -16,7 +16,7 @@ public class GameRouter {
     @Bean
     RouterFunction<ServerResponse> createGame(GameHandler handler) {
         return RouterFunctions.route(RequestPredicates
-                        .POST("/")
+                        .POST("/games")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON))
                         .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON)),
                 handler::createGame);
@@ -25,7 +25,7 @@ public class GameRouter {
     @Bean
     RouterFunction<ServerResponse> findGameById(GameHandler handler) {
         return RouterFunctions.route(RequestPredicates
-                        .GET("/{id}")
+                        .GET("/games/{id}")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
                 handler::findGameById);
     }
@@ -33,7 +33,7 @@ public class GameRouter {
     @Bean
     RouterFunction<ServerResponse> updateGame(GameHandler handler) {
         return RouterFunctions.route(RequestPredicates
-                        .PUT("/{id}")
+                        .PUT("/games/{id}")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON))
                         .and(RequestPredicates.contentType(MediaType.APPLICATION_JSON)),
                 handler::updateGame);
@@ -41,6 +41,6 @@ public class GameRouter {
 
     @Bean
     RouterFunction<ServerResponse> deleteGame(GameHandler handler) {
-        return RouterFunctions.route(RequestPredicates.DELETE("/{id}"), handler::deleteGame);
+        return RouterFunctions.route(RequestPredicates.DELETE("/games/{id}"), handler::deleteGame);
     }
 }

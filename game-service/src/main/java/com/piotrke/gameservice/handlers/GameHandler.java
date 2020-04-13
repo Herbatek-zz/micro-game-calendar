@@ -1,9 +1,12 @@
 package com.piotrke.gameservice.handlers;
 
 import com.piotrke.gameservice.entities.Game;
+import com.piotrke.gameservice.exceptions.BadRequestException;
+import com.piotrke.gameservice.exceptions.NotFoundException;
 import com.piotrke.gameservice.repositories.GameRepository;
 import com.piotrke.gameservice.services.GameService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -36,7 +39,11 @@ public class GameHandler {
     }
 
     public Mono<ServerResponse> findGameById(ServerRequest request) {
-        UUID id = UUID.fromString(request.pathVariable("id"));
+        String stringId = request.pathVariable("id");
+        if (StringUtils.isBlank(stringId)) {
+            throw new BadRequestException("test", "Given id is null");
+        }
+        UUID id = UUID.fromString(stringId);
         Mono<Game> game = repository.findById(id);
         return game.flatMap(g -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(BodyInserters.fromPublisher(game, Game.class)))
                 .switchIfEmpty(ServerResponse.notFound().build());

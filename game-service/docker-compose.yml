@@ -15,8 +15,18 @@ services:
     build: ../discovery-service
     ports:
     - "8761:8761"
+    networks:
+      - defaultNetwork
   gateway-service:
     container_name: gateway-service
     build: ../gateway-service
     ports:
-    - "80:80"
+    - "8662:8662"
+    links:
+      - "discovery-service:discoveryService"
+    depends_on:
+      - discovery-service
+    networks:
+      - defaultNetwork
+networks:
+  defaultNetwork:
